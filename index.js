@@ -6,6 +6,7 @@ import fs from 'node:fs'
 import { read, cwd, expand_path, does_exist } from 'lib/file'
 import { now, format } from 'lib/time'
 import { format_log } from 'lib/log'
+import 'lib/global'
 
 const { stringify: serialize } = JSON
 
@@ -38,6 +39,7 @@ function parse_args() {
   let should_skip = false
   for (const [index, arg] of args.entries()) {
     if (should_skip) {
+      should_skip = false
       continue
     }
 
