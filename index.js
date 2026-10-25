@@ -27,7 +27,7 @@ Options:
 `.trim()
 
 function parse_args() {
-  const args = process.argv.slice(2)
+  // const args = process.argv.slice(2)
 
   const options = {
     index: 'index.html',
@@ -36,40 +36,40 @@ function parse_args() {
     root: cwd(),
   }
 
-  let should_skip = false
-  for (const [index, arg] of args.entries()) {
-    if (should_skip) {
-      should_skip = false
-      continue
-    }
+  // let should_skip = false
+  // for (const [index, arg] of args.entries()) {
+  //   if (should_skip) {
+  //     should_skip = false
+  //     continue
+  //   }
 
-    if (has(['-h', '--help'], arg)) {
-      log(help)
-      return nil
-    } else if (has(['-v', '--version'], arg)) {
-      log(version)
-      return nil
-    } else if (has(['-i', '--index'], arg)) {
-      options.index = args[index + 1]
-      should_skip = true
-    } else if (has(['--not-found'], arg)) {
-      options.not_found = args[index + 1]
-      should_skip = true
-    } else if (has(['-p', '--port'], arg)) {
-      options.port = args[index + 1]
-      should_skip = true
-    } else if (has(['-r', '--root'], arg)) {
-      options.root = expand_path(cwd(), args[index + 1])
-      should_skip = true
-    } else {
-      // arg
-      options.index = arg
-    }
-  }
+  //   if (has(['-h', '--help'], arg)) {
+  //     log(help)
+  //     return nil
+  //   } else if (has(['-v', '--version'], arg)) {
+  //     log(version)
+  //     return nil
+  //   } else if (has(['-i', '--index'], arg)) {
+  //     options.index = args[index + 1]
+  //     should_skip = true
+  //   } else if (has(['--not-found'], arg)) {
+  //     options.not_found = args[index + 1]
+  //     should_skip = true
+  //   } else if (has(['-p', '--port'], arg)) {
+  //     options.port = args[index + 1]
+  //     should_skip = true
+  //   } else if (has(['-r', '--root'], arg)) {
+  //     options.root = expand_path(cwd(), args[index + 1])
+  //     should_skip = true
+  //   } else {
+  //     // arg
+  //     options.index = arg
+  //   }
+  // }
 
-  if (options.not_found == nil) {
-    options.not_found = options.index
-  }
+  // if (options.not_found == nil) {
+  //   options.not_found = options.index
+  // }
 
   return options
 }
