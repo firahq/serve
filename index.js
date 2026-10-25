@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+#!/usr/bin/env bun
 
 import { Hono } from 'hono'
 import { serve } from '@hono/node-server'
