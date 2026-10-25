@@ -1,138 +1,140 @@
-// import { Hono } from 'hono'
-// import { serve } from '@hono/node-server'
-// import { cors } from 'hono/cors'
-// import { serveStatic } from '@hono/node-server/serve-static'
-// import fs from 'node:fs'
-// import { read, cwd, expand_path, does_exist } from 'lib/file'
-// import { now, format } from 'lib/time'
-// import { format_log } from 'lib/log'
-// import 'lib/global'
+#!/usr/bin/env node
 
-// const { stringify: serialize } = JSON
+import { Hono } from 'hono'
+import { serve } from '@hono/node-server'
+import { cors } from 'hono/cors'
+import { serveStatic } from '@hono/node-server/serve-static'
+import fs from 'node:fs'
+import { read, cwd, expand_path, does_exist } from 'lib/file'
+import { now, format } from 'lib/time'
+import { format_log } from 'lib/log'
+import 'lib/global'
 
-// const version = `serve 0.0 (2026.10.26)`
+const { stringify: serialize } = JSON
 
-// const help = `
-// Serve static pages
+const version = `serve 0.0 (2026.10.26)`
 
-// Usage: serve [file] [options]
+const help = `
+Serve static pages
 
-// Options:
-//   -i, --index [file]     Page to serve (same as file arg)
-//   --not-found [file]     Page to show when not found (default: index)
-//   -p, --port [number]    Port to serve on (default: 0, random)
-//   -r, --root [path]      Root folder for reletive paths (default: cwd)
-//   -h, --help             Print help
-//   -v, --version          Print version
-// `.trim()
+Usage: serve [file] [options]
 
-// function parse_args() {
-//   // const args = process.argv.slice(2)
+Options:
+  -i, --index [file]     Page to serve (same as file arg)
+  --not-found [file]     Page to show when not found (default: index)
+  -p, --port [number]    Port to serve on (default: 0, random)
+  -r, --root [path]      Root folder for reletive paths (default: cwd)
+  -h, --help             Print help
+  -v, --version          Print version
+`.trim()
 
-//   const options = {
-//     index: 'index.html',
-//     not_found: nil,
-//     port: 0,
-//     root: cwd(),
-//   }
+function parse_args() {
+  // const args = process.argv.slice(2)
 
-//   // let should_skip = false
-//   // for (const [index, arg] of args.entries()) {
-//   //   if (should_skip) {
-//   //     should_skip = false
-//   //     continue
-//   //   }
+  const options = {
+    index: 'index.html',
+    not_found: nil,
+    port: 0,
+    root: cwd(),
+  }
 
-//   //   if (has(['-h', '--help'], arg)) {
-//   //     log(help)
-//   //     return nil
-//   //   } else if (has(['-v', '--version'], arg)) {
-//   //     log(version)
-//   //     return nil
-//   //   } else if (has(['-i', '--index'], arg)) {
-//   //     options.index = args[index + 1]
-//   //     should_skip = true
-//   //   } else if (has(['--not-found'], arg)) {
-//   //     options.not_found = args[index + 1]
-//   //     should_skip = true
-//   //   } else if (has(['-p', '--port'], arg)) {
-//   //     options.port = args[index + 1]
-//   //     should_skip = true
-//   //   } else if (has(['-r', '--root'], arg)) {
-//   //     options.root = expand_path(cwd(), args[index + 1])
-//   //     should_skip = true
-//   //   } else {
-//   //     // arg
-//   //     options.index = arg
-//   //   }
-//   // }
+  // let should_skip = false
+  // for (const [index, arg] of args.entries()) {
+  //   if (should_skip) {
+  //     should_skip = false
+  //     continue
+  //   }
 
-//   // if (options.not_found == nil) {
-//   //   options.not_found = options.index
-//   // }
+  //   if (has(['-h', '--help'], arg)) {
+  //     log(help)
+  //     return nil
+  //   } else if (has(['-v', '--version'], arg)) {
+  //     log(version)
+  //     return nil
+  //   } else if (has(['-i', '--index'], arg)) {
+  //     options.index = args[index + 1]
+  //     should_skip = true
+  //   } else if (has(['--not-found'], arg)) {
+  //     options.not_found = args[index + 1]
+  //     should_skip = true
+  //   } else if (has(['-p', '--port'], arg)) {
+  //     options.port = args[index + 1]
+  //     should_skip = true
+  //   } else if (has(['-r', '--root'], arg)) {
+  //     options.root = expand_path(cwd(), args[index + 1])
+  //     should_skip = true
+  //   } else {
+  //     // arg
+  //     options.index = arg
+  //   }
+  // }
 
-//   return options
-// }
+  // if (options.not_found == nil) {
+  //   options.not_found = options.index
+  // }
 
-// function run(options) {
-//   const { index, not_found, port, root } = options
+  return options
+}
 
-//   // const app = new Hono()
+function run(options) {
+  const { index, not_found, port, root } = options
 
-//   // app.use('*', cors())
+  // const app = new Hono()
 
-//   // // Log Requests
-//   // app.use('*', async (c, next) => {
-//   //   await next()
-//   //   log(format_log(`${c.req.method} ${c.req.path}`, 'info'))
-//   //   // const time = format(now())
-//   //   // await next()
-//   //   // log(`${time} ${c.req.method} ${c.req.path}`)
-//   // })
+  // app.use('*', cors())
 
-//   // app.get('/', (c) => {
-//   //   const index_file = expand_path(root, index)
+  // // Log Requests
+  // app.use('*', async (c, next) => {
+  //   await next()
+  //   log(format_log(`${c.req.method} ${c.req.path}`, 'info'))
+  //   // const time = format(now())
+  //   // await next()
+  //   // log(`${time} ${c.req.method} ${c.req.path}`)
+  // })
 
-//   //   if (does_exist(index_file)) {
-//   //     return c.html(read(index_file))
-//   //   } else {
-//   //     log(format_log('index file should exist', 'error'))
-//   //     return c.text('not found')
-//   //   } 
-//   // });
+  // app.get('/', (c) => {
+  //   const index_file = expand_path(root, index)
 
-//   // // Serve Static Resources (e.g. css, js, img)
-//   // app.use('*', serveStatic({ root }))
+  //   if (does_exist(index_file)) {
+  //     return c.html(read(index_file))
+  //   } else {
+  //     log(format_log('index file should exist', 'error'))
+  //     return c.text('not found')
+  //   } 
+  // });
 
-//   // // Fallback to Not Found
-//   // app.get('*', (c) => {
-//   //   const not_found_file = expand_path(root, not_found)
+  // // Serve Static Resources (e.g. css, js, img)
+  // app.use('*', serveStatic({ root }))
 
-//   //   if (does_exist(not_found_file)) {
-//   //     return c.html(read(not_found_file))
-//   //   } else {
-//   //     log(format_log('not found file should exist', 'error'))
-//   //     return c.text('not found')
-//   //   } 
-//   // })
+  // // Fallback to Not Found
+  // app.get('*', (c) => {
+  //   const not_found_file = expand_path(root, not_found)
 
-//   // serve(
-//   //   {
-//   //     fetch: app.fetch,
-//   //     port,
-//   //   },
-//   //   (info) => {
-//   //     log(`Serve on http://localhost:${info.port}`)
-//   //   },
-//   // )
-// }
+  //   if (does_exist(not_found_file)) {
+  //     return c.html(read(not_found_file))
+  //   } else {
+  //     log(format_log('not found file should exist', 'error'))
+  //     return c.text('not found')
+  //   } 
+  // })
 
-// function main() {
-//   const options = parse_args()
+  // serve(
+  //   {
+  //     fetch: app.fetch,
+  //     port,
+  //   },
+  //   (info) => {
+  //     log(`Serve on http://localhost:${info.port}`)
+  //   },
+  // )
+}
 
-//   if (options) {
-//     run(options)
-//   }
-// }
+function main() {
+  const options = parse_args()
 
-// main()
+  if (options) {
+    run(options)
+  }
+}
+
+main()
