@@ -149,7 +149,7 @@ function run(options) {
 function main() {
   const options = parse_args()
 
-  log(options)
+  // log(options)
 
   if (options) {
     run(options)
